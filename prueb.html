@@ -1,0 +1,18 @@
+<script>
+    const libros = [
+        {"id": 1, "titulo": "Javascript", "precio": 22.00},
+        {"id": 2, "titulo": "Java", "precio": 42.00},
+        {"id": 3, "titulo": "JavaPython", "precio": 62.00}
+        ]
+
+        console.log(libros[0].titulo)
+        console.log(libros[2].titulo)
+        console.log(libros[libros.length - 1].titulo)
+
+        console.log(libros.length)
+
+        const nombres = libros.map(libro => libro.name);
+        const precios = libros.filter(libro => libro.precio > 30);
+        const sumaTotal = libros.reduce((acc, libro) => acc += libro.precio, 0);
+        console.log(sumaTotal)
+</script>
