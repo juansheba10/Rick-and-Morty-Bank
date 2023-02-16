@@ -7,7 +7,7 @@ export const useDateStore = defineStore("users", {
     }),
     actions: {
         async fetchAccounts() {
-            const { data: accounts } = await supabase
+            let {data: accounts, error} = await supabase
                 .from("users")
                 .select("*")
                 .order("id", { ascending: true });

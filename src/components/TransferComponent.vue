@@ -27,7 +27,7 @@
         >
           <option
             v-for="account in accounts"
-            :key="account.account_number"
+            :key="account.id"
             :value="account"
           >
             {{ account.name }} - {{ account.account_number }}
@@ -56,7 +56,7 @@
         >
           <option
             v-for="account in accounts"
-            :key="account.account_number"
+            :key="account.id"
             :value="account"
           >
             {{ account.name }} - {{ account.account_number }}
@@ -105,29 +105,36 @@
     </form>
   </div>
 </template>
-  
-<script >
-import HeaderComponent from "./HeaderComponent.vue";
-import fs from "fs";
-import bankData from "../../bankData.json";
 
-export default {
+<script>
+import { defineComponent, ref } from "vue";
+import { useAccountStore } from "../stores/bankAccountStore";
+
+import HeaderComponent from "./HeaderComponent.vue";
+
+export default defineComponent({
+  name: "TransferComponent",
   components: {
     HeaderComponent,
   },
-  data() {
-    return {
-      accounts: bankData.users,
-      selectedFromAccount: null,
-      selectedToAccount: null,
-      amount: 0,
-    };
-  },
-  methods: {
-    transferMoney() {
-      const fromAccount = this.selectedFromAccount;
-      const toAccount = this.selectedToAccount;
-      const amount = this.amount;
+  setup() {
+    const accounts = ref([]);
+    const selectedFromAccount = ref(null);
+    const selectedToAccount = ref(null);
+    const amount = ref(0);
+
+    const accountStore = useAccountStore();
+    async function readFromStore() {
+      accounts.value = await accountStore.fetchAccounts();
+      return accounts;
+    }
+
+    readFromStore();
+
+    const transferMoney = async () => {
+      const fromAccount = selectedFromAccount.value;
+      const toAccount = selectedToAccount.value;
+      const transferAmount = amount.value;
       if (!fromAccount) {
         alert("Por favor selecciona una cuenta de origen");
         return;
@@ -136,36 +143,33 @@ export default {
         alert("Por favor selecciona una cuenta de destino");
         return;
       }
-      if (amount <= 0) {
+      if (transferAmount <= 0) {
         alert("La cantidad debe ser mayor a 0");
         return;
       }
-      if (fromAccount.balance < amount) {
+      if (fromAccount.balance < transferAmount) {
         alert("La cuenta de origen no tiene suficiente saldo");
         return;
       }
-      fromAccount.balance -= amount;
-      toAccount.balance += amount;
-      this.selectedFromAccount = null;
-      this.selectedToAccount = null;
-      this.amount = 0;
+      fromAccount.balance -= transferAmount;
+      toAccount.balance += transferAmount;
+      selectedFromAccount.value = null;
+      selectedToAccount.value = null;
+      amount.value = 0;
       alert(
         `Transferencia exitosa ${fromAccount.balance} y ${toAccount.balance}`
       );
-      this.writeToJSONFile();
-    },
-    writeToJSONFile() {
-      fs.writeFile(
-        "bankData.json",
-        JSON.stringify({ users: this.accounts }),
-        (err) => {
-          if (err) {
-            console.error(err);
-          }
-        }
-      );
-    },
+      accountStore.saveAccounts();
+      await accountStore.fetchAccounts();
+    };
+
+    return {
+      accounts,
+      selectedFromAccount,
+      selectedToAccount,
+      amount,
+      transferMoney,
+    };
   },
-};
+});
 </script>
-  
