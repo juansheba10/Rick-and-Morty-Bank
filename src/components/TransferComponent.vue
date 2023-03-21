@@ -103,15 +103,27 @@
         </button>
       </div>
     </form>
+    <div
+      v-if="showAlert"
+      class="
+        p-4
+        mb-4
+        text-sm text-green-800
+        rounded-lg
+        bg-green-50
+        dark:bg-gray-800 dark:text-green-400
+      "
+      role="alert"
+    >
+      <span class="font-medium">¡Transferencia exitosa!</span>
+    </div>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import { useAccountStore } from "../stores/bankAccountStore";
-
 import HeaderComponent from "./HeaderComponent.vue";
-
 export default defineComponent({
   name: "TransferComponent",
   components: {
@@ -122,6 +134,8 @@ export default defineComponent({
     const selectedFromAccount = ref(null);
     const selectedToAccount = ref(null);
     const amount = ref(0);
+
+    const showAlert = ref(false);
 
     const accountStore = useAccountStore();
     async function readFromStore() {
@@ -156,10 +170,16 @@ export default defineComponent({
       selectedFromAccount.value = null;
       selectedToAccount.value = null;
       amount.value = 0;
-      alert(
-        `Transferencia exitosa ${fromAccount.balance} y ${toAccount.balance}`
-      );
-      accountStore.saveAccounts();
+
+      try {
+        await accountStore.saveAccounts();
+        showAlert.value = true;
+        setTimeout(() => {
+          showAlert.value = false;
+        }, 3000);
+      } catch (error) {
+        console.log(error);
+      }
       await accountStore.fetchAccounts();
     };
 
@@ -169,7 +189,23 @@ export default defineComponent({
       selectedToAccount,
       amount,
       transferMoney,
+      showAlert,
     };
   },
 });
 </script>
+
+
+<style scoped>
+button {
+  min-width: 10rem;
+  margin-right: 0.5rem;
+}
+
+@media screen and (max-width: 960px) {
+  button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+</style>

@@ -102,7 +102,7 @@ export default {
       if (!searchTerm.value && filtered.length > visibleCount.value) {
         filtered = filtered.slice(0, visibleCount.value);
       }
-      return filtered;
+      return filtered.slice(0, visibleCount.value);
     });
     function showMore() {
       visibleCount.value += 10;
