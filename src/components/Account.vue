@@ -1,10 +1,11 @@
 <template>
   <HeaderComponent />
+
   <SearchBar @search="search" />
   <div>
     <div class="flex flex-wrap">
       <div
-        class="w-1/4 p-3"
+        class="w-full p-3 sm:w-1/2 md:w-1/3 lg:w-1/4"
         v-for="character in visibleCharacters"
         :key="character.position"
       >
@@ -69,6 +70,7 @@
   <Footer />
 </template>
 
+
 <script>
 import { ref, computed, onMounted, watchEffect } from "vue";
 import HeaderComponent from "./HeaderComponent.vue";
@@ -85,7 +87,7 @@ export default {
   setup() {
     const characters = ref([]);
     const bankAccountStore = useAccountStore();
-    const visibleCount = ref(10);
+    const visibleCount = ref(0);
     const searchTerm = ref("");
 
     watchEffect(async () => {
@@ -93,17 +95,25 @@ export default {
     });
 
     const visibleCharacters = computed(() => {
-      const search = searchTerm.value.toLowerCase();
-      let filtered = characters.value.filter(
-        (character) =>
-          character.name.toLowerCase().includes(search) ||
-          character.account_number.toLowerCase().includes(search)
-      );
-      if (!searchTerm.value && filtered.length > visibleCount.value) {
-        filtered = filtered.slice(0, visibleCount.value);
-      }
-      return filtered.slice(0, visibleCount.value);
-    });
+  const search = searchTerm.value.toLowerCase();
+  let filtered = [];
+
+  if (search) {
+    filtered = characters.value.filter(
+      (character) =>
+        character.name.toLowerCase().includes(search) ||
+        character.account_number.toLowerCase().includes(search)
+    );
+    if (filtered.length > visibleCount.value) {
+      filtered = filtered.slice(0, visibleCount.value);
+    }
+  }
+
+  return filtered;
+});
+
+
+  
     function showMore() {
       visibleCount.value += 10;
       console.log(visibleCount.value);

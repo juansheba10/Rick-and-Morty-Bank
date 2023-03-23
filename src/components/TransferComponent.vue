@@ -1,12 +1,12 @@
 <template>
   <HeaderComponent />
-  <div class="max-w-sm mx-auto">
+  <div class="max-w-md mx-auto">
     <form
-      class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      class="bg-white shadow-lg rounded-lg p-8 mb-4"
       @submit.prevent="transferMoney"
     >
-      <div class="mb-4">
-        <label class="block text-gray-700 font-medium mb-2" for="fromAccount">
+      <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-2" for="fromAccount">
           Desde cuenta
         </label>
         <select
@@ -16,10 +16,10 @@
             shadow
             appearance-none
             border
-            rounded
+            rounded-lg
             w-full
             py-2
-            px-3
+            px-4
             text-gray-700
             leading-tight
             focus:outline-none focus:shadow-outline
@@ -34,8 +34,8 @@
           </option>
         </select>
       </div>
-      <div class="mb-4">
-        <label class="block text-gray-700 font-medium mb-2" for="toAccount">
+      <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-2" for="toAccount">
           Hacia cuenta
         </label>
         <select
@@ -45,10 +45,10 @@
             shadow
             appearance-none
             border
-            rounded
+            rounded-lg
             w-full
             py-2
-            px-3
+            px-4
             text-gray-700
             leading-tight
             focus:outline-none focus:shadow-outline
@@ -63,8 +63,8 @@
           </option>
         </select>
       </div>
-      <div class="mb-4">
-        <label class="block text-gray-700 font-medium mb-2" for="amount">
+      <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-2" for="amount">
           Cantidad
         </label>
         <input
@@ -75,10 +75,10 @@
             shadow
             appearance-none
             border
-            rounded
+            rounded-lg
             w-full
             py-2
-            px-3
+            px-4
             text-gray-700
             leading-tight
             focus:outline-none focus:shadow-outline
@@ -91,10 +91,10 @@
             bg-blue-500
             hover:bg-blue-700
             text-white
-            font-medium
+            font-semibold
             py-2
             px-4
-            rounded
+            rounded-lg
             focus:outline-none focus:shadow-outline
           "
           type="submit"
@@ -110,15 +110,17 @@
         mb-4
         text-sm text-green-800
         rounded-lg
-        bg-green-50
+        bg-green-100
+        border border-green-400
         dark:bg-gray-800 dark:text-green-400
       "
       role="alert"
     >
-      <span class="font-medium">¡Transferencia exitosa!</span>
+      <span class="font-semibold">¡Transferencia exitosa!</span>
     </div>
   </div>
 </template>
+
 
 <script>
 import { defineComponent, ref } from "vue";
@@ -134,17 +136,13 @@ export default defineComponent({
     const selectedFromAccount = ref(null);
     const selectedToAccount = ref(null);
     const amount = ref(0);
-
     const showAlert = ref(false);
-
     const accountStore = useAccountStore();
     async function readFromStore() {
       accounts.value = await accountStore.fetchAccounts();
       return accounts;
     }
-
     readFromStore();
-
     const transferMoney = async () => {
       const fromAccount = selectedFromAccount.value;
       const toAccount = selectedToAccount.value;
@@ -170,7 +168,6 @@ export default defineComponent({
       selectedFromAccount.value = null;
       selectedToAccount.value = null;
       amount.value = 0;
-
       try {
         await accountStore.saveAccounts();
         showAlert.value = true;
@@ -182,7 +179,6 @@ export default defineComponent({
       }
       await accountStore.fetchAccounts();
     };
-
     return {
       accounts,
       selectedFromAccount,
@@ -201,7 +197,6 @@ button {
   min-width: 10rem;
   margin-right: 0.5rem;
 }
-
 @media screen and (max-width: 960px) {
   button {
     width: 100%;

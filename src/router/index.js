@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from "../views/Home.vue"
 import Auth from "../views/Auth.vue"
 import signIn from "../components/SignIn.vue"
-import signUp from "../components/signUp.vue"
+import signUp from "../components/SignUp.vue"
 import account from "../components/Account.vue"
 import transferAccount from "../components/TransferComponent.vue"
 

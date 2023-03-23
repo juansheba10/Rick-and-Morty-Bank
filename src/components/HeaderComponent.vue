@@ -1,202 +1,64 @@
 <template>
-  <nav
-    class="
-      bg-blue-300
-      border-gray-200
-      px-2
-      sm:px-4
-      py-2.5
-      rounded
-      dark:bg-gray-900
-    "
-  >
-    <div class="container flex flex-wrap items-center justify-between mx-auto">
-      <a href="https://flowbite.com/" class="flex items-center">
-        <img
-          src="https://flowbite.com/docs/images/logo.svg"
-          class="h-6 mr-3 sm:h-9"
-          alt="Flowbite Logo"
-        />
-        <span
-          class="
-            self-center
-            text-xl
-            font-semibold
-            whitespace-nowrap
-            dark:text-white
-          "
-          >Flowbite</span
-        >
-      </a>
-      <button
-        data-collapse-toggle="navbar-default"
-        type="button"
-        class="
-          inline-flex
-          items-center
-          p-2
-          ml-3
-          text-sm text-gray-500
-          rounded-lg
-          md:hidden
-          hover:bg-gray-100
-          focus:outline-none focus:ring-2 focus:ring-gray-200
-          dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600
-        "
-        aria-controls="navbar-default"
-        aria-expanded="false"
-      >
-        <span class="sr-only">Open main menu</span>
-        <svg
-          class="w-6 h-6"
-          aria-hidden="true"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
-      </button>
-      <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-        <ul
-          class="
-            flex flex-col
-            p-4
-            mt-4
-            border border-gray-100
-            rounded-lg
-            bg-gray-50
-            md:flex-row
-            md:space-x-8
-            md:mt-0
-            md:text-sm
-            md:font-medium
-            md:border-0
-            md:bg-white
-            dark:bg-gray-800
-            md:dark:bg-gray-900
-            dark:border-gray-700
-          "
-        >
-          <li>
-            <a
-              @click="signOut"
-              href="#"
-              class="
-                block
-                py-2
-                pr-4
-                pl-3
-                text-white
-                bg-blue-700
-                rounded
-                md:bg-transparent md:text-blue-700 md:p-0
-                dark:text-white
-              "
-              aria-current="page"
-              >Log Out</a
-            >
-          </li>
-          <li>
-            <a
-              href="#"
-              class="
-                block
-                py-2
-                pl-3
-                pr-4
-                text-gray-700
-                rounded
-                hover:bg-gray-100
-                md:hover:bg-transparent
-                md:border-0
-                md:hover:text-blue-700
-                md:p-0
-                dark:text-gray-400
-                md:dark:hover:text-white
-                dark:hover:bg-gray-700 dark:hover:text-white
-                md:dark:hover:bg-transparent
-              "
-              >About</a
-            >
-          </li>
-          <li>
-            <a
-              href="/accounts"
-              class="
-                block
-                py-2
-                pl-3
-                pr-4
-                text-gray-700
-                rounded
-                hover:bg-gray-100
-                md:hover:bg-transparent
-                md:border-0
-                md:hover:text-blue-700
-                md:p-0
-                dark:text-gray-400
-                md:dark:hover:text-white
-                dark:hover:bg-gray-700 dark:hover:text-white
-                md:dark:hover:bg-transparent
-              "
-              >Services</a
-            >
-          </li>
-          <li>
-            <a
-              href="/transfers"
-              class="
-                block
-                py-2
-                pl-3
-                pr-4
-                text-gray-700
-                rounded
-                hover:bg-gray-100
-                md:hover:bg-transparent
-                md:border-0
-                md:hover:text-blue-700
-                md:p-0
-                dark:text-gray-400
-                md:dark:hover:text-white
-                dark:hover:bg-gray-700 dark:hover:text-white
-                md:dark:hover:bg-transparent
-              "
-              >Pricing</a
-            >
-          </li>
-          <li>
-            <a
-              href="#"
-              class="
-                block
-                py-2
-                pl-3
-                pr-4
-                text-gray-700
-                rounded
-                hover:bg-gray-100
-                md:hover:bg-transparent
-                md:border-0
-                md:hover:text-blue-700
-                md:p-0
-                dark:text-gray-400
-                md:dark:hover:text-white
-                dark:hover:bg-gray-700 dark:hover:text-white
-                md:dark:hover:bg-transparent
-              "
-              >Contact</a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <header>
+    <nav class="z-10 w-11/12 ">
+            <div class="flex flex-wrap items-center justify-between py-2 gap-6 md:py-4 md:gap-0 relative">
+                <input aria-hidden="true" type="checkbox" name="toggle_nav" id="toggle_nav" class="hidden peer">
+                <div class="relative z-20 w-full ml-16 flex justify-between lg:w-max md:px-0">
+                    <a  aria-label="logo" class="flex space-x-2 items-center">
+                        <div aria-hidden="true" class="flex space-x-1">
+                            <img class="h-12 w-12" src="https://www.freepnglogos.com/uploads/rick-and-morty-png/rick-and-morty-portal-shoes-white-clothing-zavvi-23.png" alt="">
+                        </div>
+                        <PersonalRouter text="Rick and Morty" :route="route2" class="block md:px-4 transition hover:text-primary" />
+                    </a>
+                    
+                    <div class="relative flex items-center lg:hidden max-h-10">
+                        <label role="button" for="toggle_nav" aria-label="humburger" id="hamburger" class="relative  p-6 -mr-6">
+                            <div aria-hidden="true" id="line" class="m-auto h-0.5 w-5 rounded bg-sky-900 dark:bg-gray-300 transition duration-300"></div>
+                            <div aria-hidden="true" id="line2" class="m-auto mt-2 h-0.5 w-5 rounded bg-sky-900 dark:bg-gray-300 transition duration-300"></div>
+                        </label>
+                    </div>
+                </div>
+                <div aria-hidden="true" class="fixed z-10 inset-0 h-screen w-screen bg-white/70 backdrop-blur-2xl origin-bottom scale-y-0 transition duration-500 peer-checked:origin-top peer-checked:scale-y-100 lg:hidden dark:bg-gray-900/70"></div>
+                <div class="flex-col z-20 flex-wrap gap-6 p-8 rounded-3xl border border-gray-100 bg-white shadow-2xl shadow-gray-600/10 justify-end w-full invisible opacity-0 translate-y-1  absolute top-full left-0 transition-all duration-300 scale-95 origin-top 
+                            lg:relative lg:scale-100 lg:peer-checked:translate-y-0 lg:translate-y-0 lg:flex lg:flex-row lg:items-center lg:gap-0 lg:p-0 lg:bg-transparent lg:w-7/12 lg:visible lg:opacity-100 lg:border-none
+                            peer-checked:scale-100 peer-checked:opacity-100 peer-checked:visible lg:shadow-none 
+                            dark:shadow-none dark:bg-gray-800 dark:border-gray-700">
+                   
+                    <div class="text-gray-600 dark:text-gray-300 lg:pr-4 lg:w-auto w-full lg:pt-0">
+                        <ul class="tracking-wide font-medium lg:text-sm flex-col flex lg:flex-row gap-6 lg:gap-0">
+                            <li>
+                                <PersonalRouter text="Transferencias" :route="route3" class="block md:px-4 transition hover:text-primary" />
+                            </li>
+                            <li>
+                                <PersonalRouter text="Cuentas" :route="route2" class="block md:px-4 transition hover:text-primary" />
+                            </li>
+                            <li>
+                                <a href="#testimonials" class="block md:px-4 transition hover:text-primary">
+                                    <span>Testimonials</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#blog" class="block md:px-4 transition hover:text-primary">
+                                    <span>Blog</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-12 lg:mt-0">
+                        <a @click="signOut"
+                            href="#"
+                            class="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-blue-500 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+                            >
+                            <span class="relative text-sm font-semibold text-white"
+                                >Log Out</span
+                            >
+                        </a>
+                    </div>
+                </div>
+            </div>
+    </nav>
+</header>
 </template>
 
 <script setup>
@@ -206,7 +68,7 @@ import { useRouter } from "vue-router";
 import PersonalRouter from "./PersonalRouter.vue";
 
 //CONST PARA USAR LA TIENDA DEL USUARIO PARA HACER MI SIGN OUT
-const route = "/clients-section";
+const route = "/";
 const route1 = "/profile";
 const route2 = "/accounts";
 const route3 = "/transfers";
