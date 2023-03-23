@@ -125,7 +125,9 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useAccountStore } from "../stores/bankAccountStore";
+import { useTransferStore } from "../stores/transfers.js";
 import HeaderComponent from "./HeaderComponent.vue";
+
 export default defineComponent({
   name: "TransferComponent",
   components: {
@@ -138,15 +140,19 @@ export default defineComponent({
     const amount = ref(0);
     const showAlert = ref(false);
     const accountStore = useAccountStore();
+    const transferStore = useTransferStore();
+
     async function readFromStore() {
       accounts.value = await accountStore.fetchAccounts();
       return accounts;
     }
     readFromStore();
+
     const transferMoney = async () => {
       const fromAccount = selectedFromAccount.value;
       const toAccount = selectedToAccount.value;
       const transferAmount = amount.value;
+      
       if (!fromAccount) {
         alert("Por favor selecciona una cuenta de origen");
         return;
@@ -163,11 +169,28 @@ export default defineComponent({
         alert("La cuenta de origen no tiene suficiente saldo");
         return;
       }
+
+      const transferData = {
+        from_account_id: fromAccount.id,
+        from_account_name: fromAccount.name,
+        to_account_id: toAccount.id,
+        to_account_name: toAccount.name,
+        amount: transferAmount,
+        date: new Date().toISOString(),
+      };
+
+      try {
+        await transferStore.addTransfer(transferData);
+      } catch (error) {
+        console.log(error);
+      }
+
       fromAccount.balance -= transferAmount;
       toAccount.balance += transferAmount;
       selectedFromAccount.value = null;
       selectedToAccount.value = null;
       amount.value = 0;
+
       try {
         await accountStore.saveAccounts();
         showAlert.value = true;
@@ -179,6 +202,7 @@ export default defineComponent({
       }
       await accountStore.fetchAccounts();
     };
+
     return {
       accounts,
       selectedFromAccount,
@@ -190,6 +214,7 @@ export default defineComponent({
   },
 });
 </script>
+
 
 
 <style scoped>
