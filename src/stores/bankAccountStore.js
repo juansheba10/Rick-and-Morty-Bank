@@ -1,40 +1,54 @@
 import { defineStore } from "pinia";
 import { supabase } from "../supabase";
-import { useUserStore } from "./user";
 
-export const useAccountStore = defineStore("accounts", {
-    state: () => ({
-        accounts: null,
-    }),
-    actions: {
-        async fetchAccounts() {
-            const { data: accounts } = await supabase
-                .from("accounts")
-                .select("*")
-                .order("position", { ascending: true });
-            this.accounts = accounts;
-            return this.accounts;
-      },
-      async saveAccounts() {
-        const { error } = await supabase
-          .from("accounts")
-          .upsert(this.accounts);
+export const useAccountStore = defineStore("account", {
+  state: () => ({
+    accounts: [],
+  }),
+
+  actions: {
+    async fetchAccounts() {
+      const { data: accounts, error } = await supabase.from("accounts").select("*");
+
+      if (error) {
+        throw error;
+      }
+
+      this.accounts = accounts;
+    },
+
+    async fetchAssignedAccounts(userId) {
+      const { data: accounts, error } = await supabase
+        .from("accounts")
+        .select("*")
+        .eq("assigned_to", userId);
+
+      if (error) {
+        throw error;
+      }
+
+      return accounts;
+    },
+
+    async saveAccounts() {
+      const { error } = await supabase.from("accounts").upsert(this.accounts);
+
+      if (error) {
+        throw error;
+      }
+    },
+
+    getters: {
+      assignedAccounts() {
+        const currentUserId = useUserStore().currentUserId.value;
+
   
-        if (error) {
-          console.error(error);
-        }
+        if (!currentUserId) return [];
+  
+        const assignedAccounts = this.fetchAssignedAccounts(currentUserId);
+  
+        return assignedAccounts;
       },
-        async addAccount(account) {
-            const { data: newAccount, error } = await supabase
-              .from('accounts')
-              .insert(account);
-      
-            if (error) {
-              throw new Error(error.message);
-            }
-      
-            this.accounts.push(newAccount[0]);
-          },
-    }
-    
-})
+    },
+  },
+});

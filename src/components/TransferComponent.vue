@@ -26,7 +26,7 @@
           "
         >
           <option
-            v-for="account in accounts"
+            v-for="account in assignedAccounts"
             :key="account.id"
             :value="account"
           >
@@ -123,97 +123,129 @@
 
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed,watch } from "vue";
+import { useUserStore } from "../stores/user.js";
 import { useAccountStore } from "../stores/bankAccountStore";
 import { useTransferStore } from "../stores/transfers.js";
 import HeaderComponent from "./HeaderComponent.vue";
 
 export default defineComponent({
-  name: "TransferComponent",
-  components: {
-    HeaderComponent,
-  },
-  setup() {
-    const accounts = ref([]);
+name: "TransferComponent",
+components: {
+HeaderComponent,
+},
+setup() {
+  const accounts = ref([]);
     const selectedFromAccount = ref(null);
     const selectedToAccount = ref(null);
     const amount = ref(0);
     const showAlert = ref(false);
     const accountStore = useAccountStore();
     const transferStore = useTransferStore();
+    const userStore = useUserStore();
+    const currentUserId = computed(() => userStore.currentUserId);
 
+    const assignedAccountsRef = ref([]);
+ 
     async function readFromStore() {
-      accounts.value = await accountStore.fetchAccounts();
-      return accounts;
+      await accountStore.fetchAccounts();
+      accounts.value = accountStore.accounts;
+      assignedAccountsRef.value = await accountStore.fetchAssignedAccounts(
+        currentUserId.value
+      );
     }
+
+    watch(currentUserId, readFromStore, { immediate: true });
+
+
     readFromStore();
 
-    const transferMoney = async () => {
-      const fromAccount = selectedFromAccount.value;
-      const toAccount = selectedToAccount.value;
-      const transferAmount = amount.value;
-      
-      if (!fromAccount) {
-        alert("Por favor selecciona una cuenta de origen");
+    const assignedAccounts = computed(() => assignedAccountsRef.value);
+
+
+
+
+readFromStore();
+console.log(accounts.value)
+
+const transferMoney = async () => {
+  const fromAccount = selectedFromAccount.value;
+      if (
+        !fromAccount ||
+        !assignedAccounts.value.find((account) => account.id === fromAccount.id)
+      ) {
+        alert("Por favor selecciona una cuenta de origen válida");
         return;
       }
-      if (!toAccount) {
-        alert("Por favor selecciona una cuenta de destino");
-        return;
-      }
-      if (transferAmount <= 0) {
-        alert("La cantidad debe ser mayor a 0");
-        return;
-      }
-      if (fromAccount.balance < transferAmount) {
-        alert("La cuenta de origen no tiene suficiente saldo");
-        return;
-      }
+  const toAccount = selectedToAccount.value;
+  const transferAmount = amount.value;
+  
+  if (!fromAccount) {
+    alert("Por favor selecciona una cuenta de origen");
+    return;
+  }
+  if (!toAccount) {
+    alert("Por favor selecciona una cuenta de destino");
+    return;
+  }
+  if (transferAmount <= 0) {
+    alert("La cantidad debe ser mayor a 0");
+    return;
+  }
+  if (fromAccount.balance < transferAmount) {
+    alert("La cuenta de origen no tiene suficiente saldo");
+    return;
+  }
 
-      const transferData = {
-        from_account_id: fromAccount.id,
-        from_account_name: fromAccount.name,
-        to_account_id: toAccount.id,
-        to_account_name: toAccount.name,
-        amount: transferAmount,
-        date: new Date().toISOString(),
-      };
+  const transferData = {
+    from_account_id: fromAccount.id,
+    from_account_name: fromAccount.name,
+    to_account_id: toAccount.id,
+    to_account_name: toAccount.name,
+    amount: transferAmount,
+    date: new Date().toISOString(),
+    assigned_to: useUserStore().currentUserId,
+  };
 
-      try {
-        await transferStore.addTransfer(transferData);
-      } catch (error) {
-        console.log(error);
-      }
+  try {
+    await transferStore.addTransfer(transferData);
+  } catch (error) {
+    console.log(error);
+  }
 
-      fromAccount.balance -= transferAmount;
-      toAccount.balance += transferAmount;
-      selectedFromAccount.value = null;
-      selectedToAccount.value = null;
-      amount.value = 0;
+  fromAccount.balance -= transferAmount;
+  toAccount.balance += transferAmount;
+  selectedFromAccount.value = null;
+  selectedToAccount.value = null;
+  amount.value = 0;
 
-      try {
-        await accountStore.saveAccounts();
-        showAlert.value = true;
-        setTimeout(() => {
-          showAlert.value = false;
-        }, 3000);
-      } catch (error) {
-        console.log(error);
-      }
-      await accountStore.fetchAccounts();
-    };
+  try {
+    await accountStore.saveAccounts();
+    showAlert.value = true;
+    setTimeout(() => {
+      showAlert.value = false;
+    }, 3000);
+  } catch (error) {
+    console.log(error);
+  }
+  await accountStore.fetchAccounts();
+};
 
-    return {
-      accounts,
+return {
+  accounts,
+      assignedAccounts,
       selectedFromAccount,
       selectedToAccount,
       amount,
       transferMoney,
       showAlert,
-    };
-  },
+      currentUserId,
+};
+},
 });
+
 </script>
+
 
 
 

@@ -4,18 +4,22 @@ import { supabase } from "../supabase";
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
+    currentUserId: null,
   }),
 
   actions: {
     async fetchUser() {
-      if (!this.user) {
-        const user = await supabase.auth.getUser();
-        this.user = user;
-      }
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      this.user = user;
+      this.currentUserId = user?.id;
+      return this.user
     },
 
+    
+
     async signInWithEmail(email, password) {
-      const { user, error } = await supabase.auth.signIn({
+      const { user, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -91,6 +95,11 @@ export const useUserStore = defineStore("user", {
           storage: localStorage,
         },
       ],
+    },
+    getters: {
+      currentUserId() {
+        return this.currentUserId;
+      },
     },
   },
 });
